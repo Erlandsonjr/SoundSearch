@@ -7,22 +7,51 @@ const explicitFilter = document.getElementById('explicitFilter');
 const searchBtn = document.getElementById('searchBtn');
 const resultsContainer = document.getElementById('resultsContainer');
 const playlistContainer = document.getElementById('playlistContainer');
+const mobileTabs = document.getElementById('mobileTabs');
+const playlistSection = document.querySelector('.playlist-section');
 const modal = document.getElementById('detailsModal');
 const modalBody = document.getElementById('modalBody');
 const closeBtn = document.querySelector('.close-btn');
 
 let currentAudio = null;
+let activeMobileTab = 'results';
+
+function isMobileLayout() {
+    return window.innerWidth <= 860;
+}
+
+function updateMobileTabs() {
+    if (!mobileTabs || !playlistSection) return;
+
+    const isMobile = isMobileLayout();
+
+    searchView.classList.toggle('is-mobile-layout', isMobile);
+
+    resultsContainer.classList.toggle('mobile-only-hidden', isMobile && activeMobileTab !== 'results');
+    playlistSection.classList.toggle('mobile-only-hidden', isMobile && activeMobileTab !== 'playlist');
+
+    mobileTabs.querySelectorAll('.mobile-tab').forEach(button => {
+        button.classList.toggle('is-active', button.dataset.tab === activeMobileTab);
+    });
+}
+
+function setMobileTab(tab) {
+    activeMobileTab = tab;
+    updateMobileTabs();
+}
 
 function showHome() {
     homeView.style.display = 'flex';
     searchView.style.display = 'none';
     searchInput.value = '';
     resultsContainer.innerHTML = '';
+    setMobileTab('results');
 }
 
 function showResults() {
     homeView.style.display = 'none';
     searchView.style.display = 'flex';
+    updateMobileTabs();
 }
 
 function formatTime(millis) {
@@ -174,18 +203,35 @@ function renderPlaylist() {
     });
 }
 
-logo.addEventListener('click', showHome);
-
-searchBtn.addEventListener('click', async () => {
+async function handleSearch() {
     const term = searchInput.value.trim();
     if (!term) return;
+
     showResults();
+    setMobileTab('results');
     resultsContainer.innerHTML = '<p>Buscando...</p>';
+
     try {
         const data = await fetchiTunesData(term, typeFilter.value, explicitFilter.value);
         renderResults(data);
     } catch (e) {
         resultsContainer.innerHTML = '<p>Erro na busca.</p>';
+    }
+}
+
+logo.addEventListener('click', showHome);
+
+mobileTabs.querySelectorAll('.mobile-tab').forEach(button => {
+    button.addEventListener('click', () => {
+        setMobileTab(button.dataset.tab);
+    });
+});
+
+searchBtn.addEventListener('click', handleSearch);
+
+searchInput.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+        handleSearch();
     }
 });
 
@@ -201,4 +247,7 @@ window.onclick = (e) => {
     }
 };
 
+window.addEventListener('resize', updateMobileTabs);
+
+updateMobileTabs();
 renderPlaylist();
