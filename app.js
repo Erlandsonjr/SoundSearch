@@ -9,9 +9,19 @@ const resultsContainer = document.getElementById('resultsContainer');
 const playlistContainer = document.getElementById('playlistContainer');
 const mobileTabs = document.getElementById('mobileTabs');
 const playlistSection = document.querySelector('.playlist-section');
+const openSuggestionModalBtn = document.getElementById('openSuggestionModalBtn');
+const playlistFeedback = document.getElementById('playlistFeedback');
+const suggestionForm = document.getElementById('suggestionForm');
+const fullName = document.getElementById('fullName');
+const studentId = document.getElementById('studentId');
+const academicEmail = document.getElementById('academicEmail');
+const choiceReason = document.getElementById('choiceReason');
+const formFeedback = document.getElementById('formFeedback');
 const modal = document.getElementById('detailsModal');
+const suggestionModal = document.getElementById('suggestionModal');
 const modalBody = document.getElementById('modalBody');
-const closeBtn = document.querySelector('.close-btn');
+const detailsCloseBtn = document.getElementById('detailsCloseBtn');
+const suggestionCloseBtn = document.getElementById('suggestionCloseBtn');
 
 let currentAudio = null;
 let activeMobileTab = 'results';
@@ -111,6 +121,12 @@ function renderResults(results) {
             card.appendChild(playBtn);
         }
 
+        const addBtn = document.createElement('button');
+        addBtn.className = 'btn btn-add';
+        addBtn.innerHTML = '<i class="fas fa-plus"></i> Adicionar';
+        addBtn.onclick = () => addToPlaylist(item);
+        card.appendChild(addBtn);
+
         const detailsBtn = document.createElement('button');
         detailsBtn.className = 'btn btn-details';
         detailsBtn.innerHTML = '<i class="fas fa-info-circle"></i> Detalhes';
@@ -176,6 +192,8 @@ function openDetails(item) {
 
 function renderPlaylist() {
     playlistContainer.innerHTML = '';
+    openSuggestionModalBtn.disabled = playlist.length === 0;
+
     if(playlist.length === 0) {
         playlistContainer.innerHTML = '<p>Sua playlist está vazia.</p>';
         return;
@@ -188,7 +206,7 @@ function renderPlaylist() {
         
         div.innerHTML = `
             <div><strong>${title}</strong><br><small>${item.artistName || ''}</small></div>
-            <label>
+            <label class="playlist-select">
                 <input type="checkbox" class="suggest-check" data-id="${item.uniqueId}" ${item.suggest ? 'checked' : ''}> Sugerir para a rádio
             </label>
             <button class="btn btn-remove" onclick="removeFromPlaylist(${item.uniqueId})"><i class="fas fa-trash"></i> Remover</button>
@@ -200,6 +218,167 @@ function renderPlaylist() {
         check.addEventListener('change', (e) => {
             toggleSuggest(Number(e.target.dataset.id), e.target.checked);
         });
+    });
+}
+
+function getFieldErrorElement(fieldId) {
+    return document.getElementById(fieldId + 'Error');
+}
+
+function setFieldError(field, message) {
+    field.classList.add('input-error');
+    getFieldErrorElement(field.id).textContent = message;
+}
+
+function clearFieldError(field) {
+    field.classList.remove('input-error');
+    getFieldErrorElement(field.id).textContent = '';
+}
+
+function setFormFeedback(message, type) {
+    formFeedback.textContent = message;
+    formFeedback.className = 'form-feedback';
+
+    if (type) {
+        formFeedback.classList.add(type === 'success' ? 'is-success' : 'is-error');
+    }
+}
+
+function setPlaylistFeedback(message, type) {
+    playlistFeedback.textContent = message;
+    playlistFeedback.className = 'form-feedback';
+
+    if (type) {
+        playlistFeedback.classList.add(type === 'success' ? 'is-success' : 'is-error');
+    }
+}
+
+function getSelectedTracks() {
+    return playlist.filter(item => item.suggest);
+}
+
+function openSuggestionModal() {
+    if (getSelectedTracks().length === 0) {
+        setPlaylistFeedback('Selecione pelo menos uma música da playlist para enviar.', 'error');
+        return;
+    }
+
+    setPlaylistFeedback('', '');
+    setFormFeedback('', '');
+    suggestionModal.style.display = 'flex';
+}
+
+function closeSuggestionModal() {
+    suggestionModal.style.display = 'none';
+}
+
+function closeDetailsModal() {
+    modal.style.display = 'none';
+    if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+}
+
+function validateFullName() {
+    const value = fullName.value.trim();
+
+    if (!value) {
+        setFieldError(fullName, 'Informe o nome completo.');
+        return false;
+    }
+
+    if (value.split(/\s+/).filter(Boolean).length < 2) {
+        setFieldError(fullName, 'Digite pelo menos nome e sobrenome.');
+        return false;
+    }
+
+    clearFieldError(fullName);
+    return true;
+}
+
+function validateStudentId() {
+    const value = studentId.value.trim();
+
+    if (!value) {
+        setFieldError(studentId, 'Informe a matrícula.');
+        return false;
+    }
+
+    if (!/^\d+$/.test(value)) {
+        setFieldError(studentId, 'A matrícula deve conter apenas números.');
+        return false;
+    }
+
+    clearFieldError(studentId);
+    return true;
+}
+
+function validateAcademicEmail() {
+    const value = academicEmail.value.trim();
+
+    if (!value) {
+        setFieldError(academicEmail, 'Informe o e-mail académico.');
+        return false;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+        setFieldError(academicEmail, 'Informe um e-mail válido.');
+        return false;
+    }
+
+    clearFieldError(academicEmail);
+    return true;
+}
+
+function validateChoiceReason() {
+    const value = choiceReason.value.trim();
+
+    if (!value) {
+        setFieldError(choiceReason, 'Informe a justificativa da escolha.');
+        return false;
+    }
+
+    if (value.length < 15) {
+        setFieldError(choiceReason, 'A justificativa deve ter pelo menos 15 caracteres.');
+        return false;
+    }
+
+    clearFieldError(choiceReason);
+    return true;
+}
+
+function validateSuggestionForm() {
+    const isFullNameValid = validateFullName();
+    const isStudentIdValid = validateStudentId();
+    const isAcademicEmailValid = validateAcademicEmail();
+    const isChoiceReasonValid = validateChoiceReason();
+
+    return isFullNameValid && isStudentIdValid && isAcademicEmailValid && isChoiceReasonValid;
+}
+
+function resetSuggestionForm() {
+    suggestionForm.reset();
+    [fullName, studentId, academicEmail, choiceReason].forEach(clearFieldError);
+}
+
+function clearActivePlaylist() {
+    playlist = [];
+    savePlaylist();
+}
+
+function handleFieldInput(field, validateField) {
+    field.addEventListener('input', () => {
+        clearFieldError(field);
+
+        if (formFeedback.textContent) {
+            setFormFeedback('', '');
+        }
+
+        if (playlistFeedback.textContent) {
+            setPlaylistFeedback('', '');
+        }
+
+        if (field.value.trim()) {
+            validateField();
+        }
     });
 }
 
@@ -227,6 +406,8 @@ mobileTabs.querySelectorAll('.mobile-tab').forEach(button => {
     });
 });
 
+openSuggestionModalBtn.addEventListener('click', openSuggestionModal);
+
 searchBtn.addEventListener('click', handleSearch);
 
 searchInput.addEventListener('keydown', (event) => {
@@ -235,15 +416,36 @@ searchInput.addEventListener('keydown', (event) => {
     }
 });
 
-closeBtn.onclick = () => {
-    modal.style.display = 'none';
-    if (currentAudio) { currentAudio.pause(); currentAudio = null; }
-};
+handleFieldInput(fullName, validateFullName);
+handleFieldInput(studentId, validateStudentId);
+handleFieldInput(academicEmail, validateAcademicEmail);
+handleFieldInput(choiceReason, validateChoiceReason);
+
+suggestionForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    if (!validateSuggestionForm()) {
+        setFormFeedback('Corrija os campos destacados para enviar suas sugestões.', 'error');
+        return;
+    }
+
+    clearActivePlaylist();
+    resetSuggestionForm();
+    setFormFeedback('Sugestões enviadas com sucesso para a coordenação da SoundSearch.', 'success');
+    setPlaylistFeedback('Sugestões enviadas com sucesso.', 'success');
+    closeSuggestionModal();
+});
+
+detailsCloseBtn.onclick = closeDetailsModal;
+suggestionCloseBtn.onclick = closeSuggestionModal;
 
 window.onclick = (e) => {
     if (e.target === modal) {
-        modal.style.display = 'none';
-        if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+        closeDetailsModal();
+    }
+
+    if (e.target === suggestionModal) {
+        closeSuggestionModal();
     }
 };
 

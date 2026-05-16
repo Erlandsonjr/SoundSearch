@@ -33,6 +33,12 @@
                 <p>O SoundSearch ajuda você a encontrar músicas e sugerir para a nossa rádio universitária.</p>
                 <small>Use a barra de busca acima para começar.</small>
             </div>
+            <div class="institutional-card">
+                <span class="institutional-tag">Rádio Universitária</span>
+                <h3>SoundSearch</h3>
+                <p>A SoundSearch é uma vitrine universitária voltada à divulgação de novos artistas, bandas e projetos para a programação da rádio.</p>
+                <p>Sob coordenação de Ana Costa, em busca de descobertas musicais com relevância cultural e diversidade para a comunidade académica.</p>
+            </div>
         </section>
 
         <div id="searchView" class="content-container" style="display: none;">
@@ -45,14 +51,52 @@
             <aside class="playlist-section">
                 <h2>Minha Playlist</h2>
                 <div id="playlistContainer"></div>
+                <div class="playlist-actions">
+                    <button type="button" class="btn btn-submit" id="openSuggestionModalBtn">Enviar Sugestões</button>
+                    <div class="form-feedback" id="playlistFeedback"></div>
+                </div>
             </aside>
         </div>
     </main>
 
     <div id="detailsModal" class="modal">
         <div class="modal-content">
-            <span class="close-btn">&times;</span>
+            <span class="close-btn" id="detailsCloseBtn">&times;</span>
             <div id="modalBody" class="modal-layout"></div>
+        </div>
+    </div>
+
+    <div id="suggestionModal" class="modal">
+        <div class="modal-content form-modal-content">
+            <span class="close-btn form-close-btn" id="suggestionCloseBtn">&times;</span>
+            <div class="suggestion-form-wrapper suggestion-form-modal">
+                <h3>Enviar Sugestões</h3>
+                <p>Envie sua seleção para análise da coordenação da rádio.</p>
+                <form id="suggestionForm" class="suggestion-form" novalidate>
+                    <div class="form-group">
+                        <label for="fullName">Nome Completo</label>
+                        <input type="text" id="fullName" name="fullName" autocomplete="name">
+                        <span class="field-error" id="fullNameError"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="studentId">Matrícula</label>
+                        <input type="text" id="studentId" name="studentId" inputmode="numeric" autocomplete="off">
+                        <span class="field-error" id="studentIdError"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="academicEmail">E-mail Académico</label>
+                        <input type="email" id="academicEmail" name="academicEmail" autocomplete="email">
+                        <span class="field-error" id="academicEmailError"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="choiceReason">Justificativa da Escolha</label>
+                        <textarea id="choiceReason" name="choiceReason" rows="5"></textarea>
+                        <span class="field-error" id="choiceReasonError"></span>
+                    </div>
+                    <button type="submit" class="btn btn-submit">Enviar Sugestões</button>
+                    <div class="form-feedback" id="formFeedback"></div>
+                </form>
+            </div>
         </div>
     </div>
 

@@ -120,7 +120,20 @@ header {
     align-items: center;
     min-height: 60vh;
     text-align: center;
-    padding: 20px;
+    padding: 40px 20px;
+    gap: 24px;
+    flex-direction: column;
+}
+
+.hero-content,
+.institutional-card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    padding: 32px;
+    max-width: 520px;
+    width: 100%;
 }
 
 .hero-content h2 {
@@ -140,6 +153,39 @@ header {
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 1px;
+}
+
+.institutional-card {
+    text-align: left;
+}
+
+.institutional-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background-color: rgba(37, 99, 235, 0.1);
+    color: var(--primary-color);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+}
+
+.institutional-card h3 {
+    font-size: 28px;
+    color: var(--secondary-color);
+    margin-bottom: 12px;
+}
+
+.institutional-card p {
+    color: var(--text-muted);
+    margin-bottom: 14px;
+}
+
+.institutional-card p:last-child {
+    margin-bottom: 0;
 }
 
 .content-container {
@@ -304,6 +350,118 @@ header {
     margin-bottom: 12px;
 }
 
+.playlist-actions {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border-color);
+}
+
+.suggestion-form-wrapper {
+    padding: 32px;
+}
+
+.suggestion-form-wrapper h3 {
+    font-size: 20px;
+    color: var(--secondary-color);
+    margin-bottom: 8px;
+}
+
+.suggestion-form-wrapper p {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-bottom: 18px;
+}
+
+.suggestion-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    font-size: 15px;
+    outline: none;
+    transition: all 0.2s ease;
+    background-color: #f8fafc;
+    color: var(--text-main);
+    resize: vertical;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color: var(--primary-color);
+    background-color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.form-group input.input-error,
+.form-group textarea.input-error {
+    border-color: var(--danger-color);
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12);
+}
+
+.field-error {
+    min-height: 18px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--danger-color);
+}
+
+.btn-submit {
+    background-color: var(--primary-color);
+    color: #ffffff;
+    margin: 0;
+}
+
+.btn-submit:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-1px);
+}
+
+.form-feedback {
+    min-height: 22px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.form-feedback.is-success {
+    color: var(--success-color);
+}
+
+.form-feedback.is-error {
+    color: var(--danger-color);
+}
+
+.playlist-select {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+    color: var(--text-main);
+    font-size: 14px;
+}
+
+.playlist-select input {
+    accent-color: var(--primary-color);
+}
+
 .modal {
     display: none;
     position: fixed;
@@ -328,6 +486,11 @@ header {
     animation: modalSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+.form-modal-content {
+    max-width: 560px;
+    overflow: visible;
+}
+
 @keyframes modalSlideUp {
     from { opacity: 0; transform: translateY(40px); }
     to { opacity: 1; transform: translateY(0); }
@@ -348,7 +511,47 @@ header {
     flex-direction: row;
 }
 
+.suggestion-form-modal {
+    border-top: none;
+    margin-top: 0;
+    padding-top: 32px;
+}
+
+.form-close-btn {
+    color: var(--text-muted);
+    text-shadow: none;
+}
+
 @media (max-width: 600px) {
+    .home-hero {
+        padding: 24px 16px;
+    }
+
+    .hero-content,
+    .institutional-card {
+        padding: 24px;
+    }
+
+    .hero-content h2 {
+        font-size: 30px;
+    }
+
+    .institutional-card h3 {
+        font-size: 24px;
+    }
+
+    .playlist-section {
+        padding: 20px;
+    }
+
+    .suggestion-form-wrapper {
+        padding: 24px;
+    }
+
+    .suggestion-form {
+        gap: 14px;
+    }
+
     .modal-layout { flex-direction: column; }
     .modal-image-container { width: 100% !important; height: 250px; }
 }
