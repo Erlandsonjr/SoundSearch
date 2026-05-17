@@ -1,3 +1,18 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyChzBuusXMN7yOLOU1uYNDg1UyGEBZTbw4",
+    authDomain: "soundsearch-68f70.firebaseapp.com",
+    projectId: "soundsearch-68f70",
+    storageBucket: "soundsearch-68f70.firebasestorage.app",
+    messagingSenderId: "347335695662",
+    appId: "1:347335695662:web:fd5517927a9eb4d2c8af3f"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
 const logo = document.getElementById('logo');
 const homeView = document.getElementById('homeView');
 const searchView = document.getElementById('searchView');
@@ -221,6 +236,8 @@ function renderPlaylist() {
     });
 }
 
+window.renderPlaylist = renderPlaylist;
+
 function getFieldErrorElement(fieldId) {
     return document.getElementById(fieldId + 'Error');
 }
@@ -421,7 +438,7 @@ handleFieldInput(studentId, validateStudentId);
 handleFieldInput(academicEmail, validateAcademicEmail);
 handleFieldInput(choiceReason, validateChoiceReason);
 
-suggestionForm.addEventListener('submit', (e) => {
+suggestionForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     if (!validateSuggestionForm()) {
@@ -429,11 +446,24 @@ suggestionForm.addEventListener('submit', (e) => {
         return;
     }
 
-    clearActivePlaylist();
-    resetSuggestionForm();
-    setFormFeedback('Sugestões enviadas com sucesso para a coordenação da SoundSearch.', 'success');
-    setPlaylistFeedback('Sugestões enviadas com sucesso.', 'success');
-    closeSuggestionModal();
+    try {
+        await addDoc(collection(db, 'sugestoes'), {
+            fullName: fullName.value.trim(),
+            studentId: studentId.value.trim(),
+            academicEmail: academicEmail.value.trim(),
+            choiceReason: choiceReason.value.trim(),
+            tracks: getSelectedTracks(),
+            createdAt: new Date()
+        });
+
+        clearActivePlaylist();
+        resetSuggestionForm();
+        setFormFeedback('Sugestões enviadas com sucesso para a coordenação da SoundSearch.', 'success');
+        setPlaylistFeedback('Sugestões enviadas com sucesso.', 'success');
+        closeSuggestionModal();
+    } catch (error) {
+        setFormFeedback('Não foi possível enviar suas sugestões no momento. Tente novamente.', 'error');
+    }
 });
 
 detailsCloseBtn.onclick = closeDetailsModal;
