@@ -9,7 +9,10 @@
 </head>
 <body>
     <header>
-        <h1 id="logo">SoundSearch</h1>
+        <div class="header-shell">
+            <h1 id="logo">SoundSearch</h1>
+            <button id="viewHistoryBtn" class="btn btn-header-outline" type="button">Ver Histórico</button>
+        </div>
     </header>
 
     <main>
@@ -28,16 +31,19 @@
         </section>
 
         <section id="homeView" class="home-hero">
-            <div class="hero-content">
-                <h2>Descubra novos artistas</h2>
-                <p>O SoundSearch ajuda você a encontrar músicas e sugerir para a nossa rádio universitária.</p>
-                <small>Use a barra de busca acima para começar.</small>
+            <div class="hero-panel hero-content">
+                <div class="hero-copy">
+                    <span class="hero-kicker">Curadoria universitária</span>
+                    <h2>Descubra sons com potencial para a rádio do campus</h2>
+                    <p>Pesquise lançamentos, organize a sua seleção e envie sugestões para a rádio.</p>
+                    <small>Use a busca acima para montar a sua próxima curadoria.</small>
+                </div>
             </div>
-            <div class="institutional-card">
+            <div class="hero-panel institutional-card">
                 <span class="institutional-tag">Rádio Universitária</span>
                 <h3>SoundSearch</h3>
                 <p>A SoundSearch é uma vitrine universitária voltada à divulgação de novos artistas, bandas e projetos para a programação da rádio.</p>
-                <p>Sob coordenação de Ana Costa, em busca de descobertas musicais com relevância cultural e diversidade para a comunidade académica.</p>
+                <p>Sob coordenação de Ana Costa, em busca de descobertas musicais com relevância cultural e diversidade para a comunidade academica.</p>
             </div>
         </section>
 
@@ -57,6 +63,11 @@
                 </div>
             </aside>
         </div>
+
+        <section id="historyView" style="display: none;">
+            <h2>Histórico de Sugestões</h2>
+            <div id="historyContainer"></div>
+        </section>
     </main>
 
     <div id="detailsModal" class="modal">
@@ -84,7 +95,7 @@
                         <span class="field-error" id="studentIdError"></span>
                     </div>
                     <div class="form-group">
-                        <label for="academicEmail">E-mail Académico</label>
+                        <label for="academicEmail">E-mail Academico</label>
                         <input type="email" id="academicEmail" name="academicEmail" autocomplete="email">
                         <span class="field-error" id="academicEmailError"></span>
                     </div>
@@ -103,5 +114,6 @@
     <script src="api.js"></script>
     <script src="playlist.js"></script>
     <script type="module" src="app.js"></script>
+    <div id="toastNotification" class="toast-popup" style="display: none;"></div>
 </body>
 </html>
