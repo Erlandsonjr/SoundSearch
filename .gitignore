@@ -1,1 +1,17 @@
+# Windows
 desktop.ini
+Thumbs.db
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# Environment
+.env
+.env.local
+
+# Node (caso seja adicionado um build tool futuramente)
+node_modules/
