@@ -10,7 +10,7 @@ A university web application for music discovery and playlist curation for campu
 
 ## About
 
-**SoundSearch** is a university music discovery platform designed to help curate content for a campus radio station. Students search the iTunes catalog, build playlists, and submit suggestions directly to the radio coordination team, which can view all submissions in real time via Firebase Firestore.
+**SoundSearch** is a university music discovery platform designed to help curate content for a campus radio station. Students search the iTunes catalog, build playlists, and submit suggestions directly to the radio coordination team.
 
 ---
 
@@ -24,7 +24,6 @@ A university web application for music discovery and playlist curation for campu
 - **Track flagging** to mark songs for radio suggestion
 - **Suggestion form** with field validation (full name, student ID, academic email, justification)
 - **Firebase Firestore submission** — data saved to the cloud in real time
-- **Submission history** — view all entries ordered by date
 - **Responsive layout** with mobile tab navigation between results and playlist
 
 ---

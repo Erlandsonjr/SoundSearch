@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyChzBuusXMN7yOLOU1uYNDg1UyGEBZTbw4",
@@ -20,13 +20,10 @@ const searchInput = document.getElementById('searchInput');
 const typeFilter = document.getElementById('typeFilter');
 const explicitFilter = document.getElementById('explicitFilter');
 const searchBtn = document.getElementById('searchBtn');
-const viewHistoryBtn = document.getElementById('viewHistoryBtn');
 const resultsContainer = document.getElementById('resultsContainer');
 const playlistContainer = document.getElementById('playlistContainer');
 const mobileTabs = document.getElementById('mobileTabs');
 const playlistSection = document.querySelector('.playlist-section');
-const historyView = document.getElementById('historyView');
-const historyContainer = document.getElementById('historyContainer');
 const openSuggestionModalBtn = document.getElementById('openSuggestionModalBtn');
 const playlistFeedback = document.getElementById('playlistFeedback');
 const suggestionForm = document.getElementById('suggestionForm');
@@ -72,7 +69,6 @@ function setMobileTab(tab) {
 function showHome() {
     homeView.style.display = 'flex';
     searchView.style.display = 'none';
-    historyView.style.display = 'none';
     searchInput.value = '';
     resultsContainer.innerHTML = '';
     setMobileTab('results');
@@ -81,7 +77,6 @@ function showHome() {
 function showResults() {
     homeView.style.display = 'none';
     searchView.style.display = 'flex';
-    historyView.style.display = 'none';
     updateMobileTabs();
 }
 
@@ -99,65 +94,6 @@ function showToast(message) {
         toastNotification.style.display = 'none';
         toastTimeoutId = null;
     }, 3500);
-}
-
-function createHistoryCard(data) {
-    const card = document.createElement('article');
-    const tracksMarkup = Array.isArray(data.tracks) && data.tracks.length > 0
-        ? data.tracks.map(track => {
-            const title = track.trackName || track.collectionName || track.artistName || 'Faixa desconhecida';
-            const artist = track.artistName || 'Artista desconhecido';
-            return `<li>${title} - ${artist}</li>`;
-        }).join('')
-        : '<li>Nenhuma faixa registrada.</li>';
-
-    card.className = 'history-card';
-    card.innerHTML = `
-        <div class="history-card-header">
-            <h3>${data.fullName || 'Nome não informado'}</h3>
-        </div>
-        <div class="history-card-meta">
-            <span>Matrícula: ${data.studentId || 'Não informada'}</span>
-            <span>E-mail: ${data.academicEmail || 'Não informado'}</span>
-        </div>
-        <p class="history-card-reason">${data.choiceReason || 'Sem justificativa.'}</p>
-        <ul class="history-card-tracks">${tracksMarkup}</ul>
-    `;
-
-    return card;
-}
-
-async function showHistory() {
-    homeView.style.display = 'none';
-    searchView.style.display = 'none';
-    historyView.style.display = 'flex';
-    historyContainer.innerHTML = '<p class="history-empty">Carregando histórico...</p>';
-
-    try {
-        const suggestionsQuery = query(collection(db, 'sugestoes'), orderBy('createdAt', 'desc'));
-        const querySnapshot = await getDocs(suggestionsQuery);
-
-        historyContainer.innerHTML = '';
-
-        if (querySnapshot.empty) {
-            historyContainer.innerHTML = '<p class="history-empty">Nenhuma sugestão enviada até o momento.</p>';
-            return;
-        }
-
-        querySnapshot.forEach(doc => {
-            const data = doc.data();
-            historyContainer.appendChild(createHistoryCard(data));
-        });
-    } catch (error) {
-        historyContainer.innerHTML = '<p class="history-empty">Não foi possível carregar o histórico no momento.</p>';
-    }
-}
-
-function formatTime(millis) {
-    if (!millis) return "N/A";
-    const minutes = Math.floor(millis / 60000);
-    const seconds = ((millis % 60000) / 1000).toFixed(0);
-    return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
 }
 
 function playPreview(url, buttonElement) {
@@ -181,6 +117,13 @@ function playPreview(url, buttonElement) {
         buttonElement.innerHTML = '<i class="fas fa-play"></i> Play Preview';
         currentAudio = null;
     };
+}
+
+function formatTime(millis) {
+    if (!millis) return "N/A";
+    const minutes = Math.floor(millis / 60000);
+    const seconds = ((millis % 60000) / 1000).toFixed(0);
+    return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
 }
 
 function renderResults(results) {
@@ -500,7 +443,6 @@ mobileTabs.querySelectorAll('.mobile-tab').forEach(button => {
 });
 
 openSuggestionModalBtn.addEventListener('click', openSuggestionModal);
-viewHistoryBtn.addEventListener('click', showHistory);
 
 searchBtn.addEventListener('click', handleSearch);
 
